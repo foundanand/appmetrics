@@ -36,6 +36,6 @@ tap.test('Appmetrics should be a global singleton', function(t) {
   // Delete cached module
   delete require.cache[require.resolve('../')];
   var appmetrics2 = require('../');
-  t.equals(appmetrics, appmetrics2);
+  t.equal(appmetrics, appmetrics2);
   t.end();
 });

@@ -28,7 +28,6 @@ tap.tearDown(function() {
   server.close();
 });
 
-
 monitor.on('http-outbound', function(data) {
   tap.test('HTTP Outbound Event', function(t) {
     checkHttpOutboundData(data, t);
@@ -39,8 +38,11 @@ monitor.on('http-outbound', function(data) {
 function checkHttpOutboundData(data, t) {
   t.ok(isInteger(data.time), 'Timestamp is an integer');
   t.equals(data.method, 'GET', 'Should report GET as HTTP request method');
-  t.equals(data.url, `http://localhost:${server.address().port}/`,
-    `Should report http://localhost:${server.address().port}/ as URL`);
+  t.equals(
+    data.url,
+    `http://localhost:${server.address().port}/`,
+    `Should report http://localhost:${server.address().port}/ as URL`
+  );
   if (data.requestHeaders) {
     t.equals(data.requestHeaders.hello, 'world', 'Should report world as value of hello header');
   }

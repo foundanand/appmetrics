@@ -71,7 +71,7 @@ function parse(url) {
     if (index !== -1) url = url.substring(0, index);
   });
   return url;
-};
+}
 
 /*
  * Ignore requests for URLs which we've been configured via regex to ignore

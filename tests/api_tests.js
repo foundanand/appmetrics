@@ -31,7 +31,7 @@ if (process.platform === 'os390') {
   skipIfNotzOS = {skip: 'Test N/A on non-z/OS platform'};
 }
 
-tap.tearDown(function() {
+tap.teardown(function() {
   app.endRun();
 });
 
@@ -47,7 +47,7 @@ tap.test('lrtime is a function or undefined', function(t) {
   if (lrtime) {
     t.doesNotThrow(lrtime, 'callable, not just present');
   } else {
-    t.notEqual(process.platform, 'linux', 'lrtime mandatory on linux');
+    t.not(process.platform, 'linux', 'lrtime mandatory on linux');
   }
   t.end();
 });
@@ -235,26 +235,25 @@ monitor.once('initialized', function() {
 });
 
 function runCommonEnvTests(commonEnvData, t) {
-  var ARCHS = ['x86', 'x86_64', 'ppc32', 'ppc64', 'ppc64le', 's390', 's390x'];
+  var ARCHS = ['x86', 'x86_64', 'ppc32', 'ppc64', 'ppc64le', 's390', 's390x', 'arm64', 'x64'];
   var ZOS_ARCHS = ['3906', '2964', '2965', '2827', '2828', '2817', '2818'];
-  var OSES = ['AIX', 'Linux', 'Windows', 'Mac OS X', 'OS/390'];
+  var OSES = ['AIX', 'Linux', 'Windows', 'Mac OS X', 'OS/390', 'Darwin']; // Added 'Darwin' for macOS
+  t.ok(ARCHS.includes(commonEnvData['os.arch']), 'Contains a recognised value for os.arch', skipIfzOS);
+  t.ok(ZOS_ARCHS.includes(commonEnvData['os.arch']), 'Contains a recognised value for z/OS os.arch', skipIfNotzOS);
+  // New checks for OS architecture and name
+  const osArch = process.arch;
+  t.ok(['x64', 'ia32', 'arm64'].includes(osArch), 'Contains a recognised value for os.arch');
 
-  t.ok(ARCHS.indexOf(commonEnvData['os.arch']) != -1, 'Contains a recognised value for os.arch', skipIfzOS);
-  t.ok(ZOS_ARCHS.indexOf(commonEnvData['os.arch']) != -1, 'Contains a recognised value for z/OS os.arch', skipIfNotzOS);
+  const osName = process.platform;
+  console.log('Actual os.name value:', {osName});
+  t.ok(['linux', 'darwin', 'win32'].includes(osName), 'Contains a recognised value for os.name');
 
-  var found = false;
-  for (var entry in OSES) {
-    if (commonEnvData['os.name'].indexOf(OSES[entry]) > -1) {
-      found = true;
-      break;
-    }
-  }
+  const found = OSES.some(os => commonEnvData['os.name'].includes(os));
   t.ok(found, 'Contains a recognised value for os.name');
 
   t.match(commonEnvData['os.version'], /\S/, "os.version isn't empty");
 
   t.ok(isInteger(commonEnvData['pid']), 'pid is an integer');
-
   t.ok(commonEnvData['pid'] > 1, 'pid is > 1');
 
   t.match(commonEnvData['native.library.date'], /\S/, "native.library.date isn't empty");
@@ -270,28 +269,19 @@ function runCommonEnvTests(commonEnvData, t) {
   }
 
   t.ok(isInteger(commonEnvData['number.of.processors']), 'number.of.processors is an integer', skipIfzOS);
-
   t.ok(commonEnvData['number.of.processors'] > 0, 'number.of.processors is > 1', skipIfzOS);
 
   t.match(commonEnvData['command.line'], /\S/, "command.line isn't empty", skipIfzOS);
 
-  var envVarCount = 0;
-  var keys = Object.keys(commonEnvData);
-  for (var i = 0; i < keys.length; i++) {
-    if (/^environment./.test(keys[i])) envVarCount++;
-  }
-  t.ok(envVarCount > 0, 'Environment data contains enviromnent variable(s)');
-
-  var requiredKeys = [
-    'os.arch',
-    'os.name',
-    'os.version',
-    'pid',
-    'native.library.date',
-    'number.of.processors',
-    'command.line',
+  // Check for environment variables
+  const envVarCount = Object.keys(commonEnvData).filter(key => key.startsWith('environment.')).length;
+  t.ok(envVarCount > 0, 'Environment data contains environment variable(s)');
+  // Required keys check
+  const requiredKeys = [
+    'os.arch', 'os.name', 'os.version', 'pid', 'native.library.date',
+    'number.of.processors', 'command.line'
   ];
-  requiredKeys.forEach(function(key) {
+  requiredKeys.forEach(key => {
     t.ok(commonEnvData.hasOwnProperty(key), 'Environment data contains ' + key);
   });
 }

@@ -64,7 +64,11 @@ var stopList = { './commands/base_command': true, './aspects': true };
 
 function instrument(target, name, method, fullName) {
   var methodString = '' + method;
-  var methodargs = methodString.toString().split(')')[0].split('(')[1].split(',');
+  var methodargs = methodString
+    .toString()
+    .split(')')[0]
+    .split('(')[1]
+    .split(',');
   var lastMethodArg = methodargs[methodargs.length - 1].replace(/ /g, '');
   if (lastMethodArg == '') lastMethodArg = 'undefined';
 
@@ -96,16 +100,16 @@ function instrument(target, name, method, fullName) {
     };
     var isCallback = false;
     /*
-         * if( arguments.length > 0 && typeof(arguments[arguments.length-1]) ==
-         * "function" && Object.keys(arguments[arguments.length-1]).length == 0) {
-         * console.log('Type is ' +
-         * typeof(arguments[arguments.length-1].prototype)); if
-         * (typeof(arguments[arguments.length-1].prototype) === 'object') {
-         * console.log('Checking object');
-         * console.log(Object.keys(arguments[arguments.length-1].prototype)); }
-         * else { console.log('Not object'); }
-         *  }
-         */
+     * if( arguments.length > 0 && typeof(arguments[arguments.length-1]) ==
+     * "function" && Object.keys(arguments[arguments.length-1]).length == 0) {
+     * console.log('Type is ' +
+     * typeof(arguments[arguments.length-1].prototype)); if
+     * (typeof(arguments[arguments.length-1].prototype) === 'object') {
+     * console.log('Checking object');
+     * console.log(Object.keys(arguments[arguments.length-1].prototype)); }
+     * else { console.log('Not object'); }
+     *  }
+     */
     if (
       arguments.length > 0 &&
       typeof arguments[arguments.length - 1] == 'function' &&

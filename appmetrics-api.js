@@ -23,9 +23,9 @@ function API(agent, appmetrics) {
   this.agent = agent;
   this.environment = {};
   /*
-     * We consider ourselves initialized when we have both OS and Runtime Env data
-     * Decrement on when we get each, and raise 'initialized' event on 0;
-     */
+   * We consider ourselves initialized when we have both OS and Runtime Env data
+   * Decrement on when we get each, and raise 'initialized' event on 0;
+   */
   this.initialized = 2;
   var that = this;
 
@@ -136,8 +136,8 @@ function API(agent, appmetrics) {
 
   var formatMemory = function(message) {
     /*
-         * MemorySource,1415976582652,totalphysicalmemory=16725618688,physicalmemory=52428800,privatememory=374747136,virtualmemory=374747136,freephysicalmemory=1591525376
-         */
+     * MemorySource,1415976582652,totalphysicalmemory=16725618688,physicalmemory=52428800,privatememory=374747136,virtualmemory=374747136,freephysicalmemory=1591525376
+     */
     var values = message.split(/[,=]+/);
     var physicalTotal = parseInt(values[3]);
     var physicalFree = parseInt(values[11]);
@@ -156,12 +156,12 @@ function API(agent, appmetrics) {
 
   var formatGC = function(message) {
     /* gc_node : NodeGCData,1413903289280,S,48948480,13828320,7
-         *                     , timestamp   ,M|S, size , used   , pause (ms)
-         *
-         * GC data can come in batches of multiple lines like the one in the example,
-         * so first separate the lines, followed by the normal parsing.
-         *
-         */
+     *                     , timestamp   ,M|S, size , used   , pause (ms)
+     *
+     * GC data can come in batches of multiple lines like the one in the example,
+     * so first separate the lines, followed by the normal parsing.
+     *
+     */
     var lines = message.trim().split('\n');
     /* Split each line into the comma-separated values. */
     lines.forEach(function(line) {
@@ -207,8 +207,8 @@ function API(agent, appmetrics) {
 
   var formatLoop = function(message) {
     /* loop_node: NodeLoopData,min,max,num,sum
-    *
-    */
+     *
+     */
     var lines = message.trim().split('\n');
     /* Split each line into the comma-separated values. */
     lines.forEach(function(line) {

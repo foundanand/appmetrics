@@ -51,7 +51,10 @@ function timestamp() {
   var timestamp =
     pad(date.getDate().toString()) +
     pad((date.getMonth() + 1).toString()) +
-    date.getFullYear().toString().substr(2, 3) +
+    date
+      .getFullYear()
+      .toString()
+      .substr(2, 3) +
     '_' +
     pad(date.getHours().toString()) +
     pad(date.getMinutes().toString()) +

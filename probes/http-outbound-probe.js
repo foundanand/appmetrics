@@ -51,8 +51,12 @@ function getRequestItems(options) {
         parsedOptions = url.parse(options);
         break;
     }
-    if (parsedOptions.method) { returnObject.requestMethod = parsedOptions.method; }
-    if (parsedOptions.headers) { returnObject.headers = parsedOptions.headers; }
+    if (parsedOptions.method) {
+      returnObject.requestMethod = parsedOptions.method;
+    }
+    if (parsedOptions.headers) {
+      returnObject.headers = parsedOptions.headers;
+    }
   }
   return returnObject;
 }

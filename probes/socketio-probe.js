@@ -29,15 +29,15 @@ SocketioProbe.prototype.attach = function(name, target) {
   var that = this;
   if (name != 'socket.io') return target;
   /*
-	 * Don't set __ddProbeAttached__ = true as we need to probe and return
-	 * the constructor each time
-	 */
+   * Don't set __ddProbeAttached__ = true as we need to probe and return
+   * the constructor each time
+   */
 
   /*
-	 * Patch the constructor so that we can patch io.sockets.emit() calls
-	 * to broadcast to clients. This also picks up calls to io.emit() as
-	 * they map down to io.socket.emit()
-	 */
+   * Patch the constructor so that we can patch io.sockets.emit() calls
+   * to broadcast to clients. This also picks up calls to io.emit() as
+   * they map down to io.socket.emit()
+   */
   var newtarget = aspect.afterConstructor(target, {}, function(target, methodName, methodArgs, context, server) {
     var broadcast = 'broadcast';
     aspect.around(
@@ -55,14 +55,14 @@ SocketioProbe.prototype.attach = function(name, target) {
     return server;
   });
   /*
-	 * Remap the listen API to point to new constructor
-	 */
+   * Remap the listen API to point to new constructor
+   */
   newtarget.listen = newtarget;
 
   /*
-	 * We patch the constructor every time, but only want to patch prototype
-	 * functions once otherwise we'll generate multiple events
-	 */
+   * We patch the constructor every time, but only want to patch prototype
+   * functions once otherwise we'll generate multiple events
+   */
   if (!target.__prototypeProbeAttached__) {
     target.__prototypeProbeAttached__ = true;
 
@@ -72,8 +72,8 @@ SocketioProbe.prototype.attach = function(name, target) {
         aspect.aroundCallback(methodArgs, context, function(target, methodArgs, context) {
           var socket = methodArgs[0];
           /*
-						 * Patch Socket#emit() calls
-						 */
+           * Patch Socket#emit() calls
+           */
           aspect.around(
             socket,
             'emit',
@@ -94,8 +94,8 @@ SocketioProbe.prototype.attach = function(name, target) {
             }
           );
           /*
-						 * Patch socket.on incoming events
-						 */
+           * Patch socket.on incoming events
+           */
           var receive = 'receive';
           aspect.before(socket, ['on', 'addListener'], function(target, methodName, methodArgs, context) {
             aspect.aroundCallback(
@@ -151,8 +151,8 @@ SocketioProbe.prototype.metricsEnd = function(context, methodName, methodArgs) {
  */
 SocketioProbe.prototype.requestStart = function(context, methodName, methodArgs) {
   /*
-	 * method names are "broadcast", "receive" and "emit"
-	 */
+   * method names are "broadcast", "receive" and "emit"
+   */
   if (methodName !== 'receive') {
     context.req = request.startRequest('socketio', methodName, false, context.timer);
   } else {

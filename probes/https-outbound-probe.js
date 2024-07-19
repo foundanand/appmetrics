@@ -52,8 +52,12 @@ function getRequestItems(options) {
         parsedOptions = url.parse(options);
         break;
     }
-    if (parsedOptions.method) { returnObject.requestMethod = parsedOptions.method; }
-    if (parsedOptions.headers) { returnObject.headers = parsedOptions.headers; }
+    if (parsedOptions.method) {
+      returnObject.requestMethod = parsedOptions.method;
+    }
+    if (parsedOptions.headers) {
+      returnObject.headers = parsedOptions.headers;
+    }
   }
   return returnObject;
 }
@@ -69,7 +73,6 @@ HttpsOutboundProbe.prototype.attach = function(name, target) {
       methods,
       // Before 'https.request' function
       function(obj, methodName, methodArgs, probeData) {
-
         // Start metrics
         that.metricsProbeStart(probeData);
         that.requestProbeStart(probeData);
@@ -79,7 +82,6 @@ HttpsOutboundProbe.prototype.attach = function(name, target) {
           methodArgs,
           probeData,
           function(target, args, probeData) {
-
             // Get HTTPS request method from options
             var ri = getRequestItems(methodArgs[0]);
             that.metricsProbeEnd(probeData, ri.requestMethod, ri.urlRequested, args[0], ri.headers);

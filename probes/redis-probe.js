@@ -215,9 +215,9 @@ RedisProbe.prototype.attach = function(name, target) {
       that.metricsProbeStart(probeData, eventName, methodArgs);
       that.requestProbeStart(probeData, eventName, methodArgs);
       /* REDIS commands don't have to have a callback.
-		 * All redis calls are asynchronous so we need to instrument or add a
-		 * callback to stop the timer.
-		 */
+       * All redis calls are asynchronous so we need to instrument or add a
+       * callback to stop the timer.
+       */
       aspect.aroundCallback(methodArgs, probeData, function(target, args) {
         // Call the transaction link with a name and the callback for strong trace
         var callbackPosition = aspect.findCallbackArg(methodArgs);
@@ -237,9 +237,9 @@ RedisProbe.prototype.attach = function(name, target) {
   );
 
   /* Monitor all calls made as one batch/multi.exec call as a single event.
-	 * Instrument the exec method on the object returned from client.batch()
-	 * or client.multi()
-	 */
+   * Instrument the exec method on the object returned from client.batch()
+   * or client.multi()
+   */
   aspect.after(target.RedisClient.prototype, ['multi', 'batch', 'MULTI', 'BATCH'], {}, function(
     target,
     mode,
@@ -256,9 +256,9 @@ RedisProbe.prototype.attach = function(name, target) {
         that.metricsProbeStart(probeData, eventName, methodArgs);
         that.requestProbeStart(probeData, eventName, methodArgs);
         /* REDIS commands don't have to have a callback.
-			 * All redis calls are asynchronous so we need to instrument or add a
-			 * callback to stop the timer.
-			 */
+         * All redis calls are asynchronous so we need to instrument or add a
+         * callback to stop the timer.
+         */
         aspect.aroundCallback(methodArgs, probeData, function() {
           that.metricsProbeEnd(probeData, eventName, methodArgs);
           that.requestProbeEnd(probeData, eventName, methodArgs);

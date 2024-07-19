@@ -31,7 +31,7 @@ var monitor = app.appmetrics.monitor();
 
 var tap = require('tap');
 tap.plan(2); // NOTE: This needs to be updated when tests are added/removed
-tap.tearDown(function() {
+tap.teardown(function() {
   app.endRun();
 });
 

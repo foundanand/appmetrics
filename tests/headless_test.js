@@ -21,6 +21,11 @@ var path = require('path');
 var appmetrics = app.appmetrics;
 var outputDir = path.join(process.cwd(), 'headlesstestoutput' + Date.now());
 
+// Ensure the output directory exists
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir);
+}
+
 // Run in headless mode for 1 minute, producing output in 'outputDir'
 appmetrics.configure({
   'com.ibm.diagnostics.healthcenter.headless': 'on',
@@ -33,40 +38,33 @@ app.start();
 var tap = require('tap');
 
 // skip the test if we're testing on z/OS platform
+// skip the test if we're testing on z/OS platform
 if (process.platform === 'os390') {
   tap.plan(0);
   cleanUp();
 } else {
-  tap.plan(1); // NOTE: This needs to be updated when tests are added/removed
-
+  tap.plan(1); // Adjust as needed
 
   tap.test('Headless mode should produce a .hcd file', function(t) {
     setTimeout(function() {
       fs.readdir(outputDir, function(error, files) {
         if (error) {
           t.fail('An error occurred: ' + error);
-          t.end();
           cleanUp();
+          t.end(); // Ensure this is called to signal the end of the test
           return;
         }
-        for (var i = 0, len = files.length; i < len; i++) {
-          if (/(\w+)\.hcd/.test(files[i].toString())) {
-            t.pass(files[i] + ' HCD file found');
-            t.end();
-            cleanUp();
-            return;
-          }
+        const hcdFiles = files.filter(file => /(\w+)\.hcd$/.test(file));
+        if (hcdFiles.length > 0) {
+          hcdFiles.forEach(file => t.pass(file + ' HCD file found'));
+        } else {
+          t.fail('No .hcd file found');
         }
-        t.fail('No .hcd file found');
-        t.end();
         cleanUp();
+        t.end(); // Ensure this is called to signal the end of the test
       });
-    }, 70000);
-  });
-
-  tap.tearDown(function() {
-    cleanUp();
-  });
+    }, 70000); // Ensure this aligns with your headless run duration
+  }); // Corrected indentation for this line
 }
 
 function cleanUp() {
@@ -77,7 +75,7 @@ function cleanUp() {
 function deleteDir(directory) {
   // Delete temporary directory
   if (fs.existsSync(directory)) {
-    fs.readdirSync(directory).forEach(function(file, index) {
+    fs.readdirSync(directory).forEach(function(file) {
       var fileName = path.join(directory, file);
       fs.unlinkSync(fileName);
     });
