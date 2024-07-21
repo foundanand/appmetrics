@@ -18,7 +18,7 @@
     "eslint": "^9.7.0",
     "eslint-config-strongloop": "^2.1.0",
     "prettier": "^3.3.3",
-    "tap": "^21.0.0"
+    "tap": "^20.0.0"
   },
   "scripts": {
     "fix-prettier": "prettier --single-quote --trailing-comma es5 --print-width 120 --write {bin,lib,probes,tests}/**/*.js *.js",
